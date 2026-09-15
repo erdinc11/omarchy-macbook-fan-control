@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ -e /run/omarchy-fan-max ]]; then
-  printf '%s\n' '{"text":"󰈐","tooltip":"Fan MAX — kapatmak için tıkla","class":"active"}'
+  printf '%s\n' '{"text":"󰈐","tooltip":"Fan MAX — click to turn off","class":"active"}'
 else
-  printf '%s\n' '{"text":"󰈐","tooltip":"Fan otomatik eğri — MAX için tıkla","class":"inactive"}'
+  printf '%s\n' '{"text":"󰈐","tooltip":"Automatic fan curve — click for MAX","class":"inactive"}'
 fi

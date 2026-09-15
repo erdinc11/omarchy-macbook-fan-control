@@ -81,7 +81,7 @@ Item {
       if (!midField.activeFocus) midField.text = String(midTemp)
       if (!maxField.activeFocus) maxField.text = String(maxTemp)
     } catch (e) {
-      message = "Eğri okunamadı"
+      message = "Curve could not be read"
     }
   }
 
@@ -98,7 +98,7 @@ Item {
   function setMax(mode) {
     if (busy) return
     busy = true
-    message = "Yetkilendirme bekleniyor..."
+    message = "Waiting for authorization..."
     if (mode === "on" && fixedActive) {
       pendingMaxMode = mode
       fixedSetProc.command = ["pkexec", "/home/anon/.config/omarchy/bar/scripts/omarchy-fan-fixed-set", "off"]
@@ -112,7 +112,7 @@ Item {
   function setFixed() {
     if (busy) return
     busy = true
-    message = "Yetkilendirme bekleniyor..."
+    message = "Waiting for authorization..."
     pendingMaxMode = ""
     fixedSetProc.command = ["pkexec", "/home/anon/.config/omarchy/bar/scripts/omarchy-fan-fixed-set", String(Math.round(fixedPercent))]
     fixedSetProc.running = true
@@ -121,7 +121,7 @@ Item {
   function setAuto() {
     if (busy) return
     busy = true
-    message = "Yetkilendirme bekleniyor..."
+    message = "Waiting for authorization..."
     if (fixedActive) {
       pendingMaxMode = ""
       fixedSetProc.command = ["pkexec", "/home/anon/.config/omarchy/bar/scripts/omarchy-fan-fixed-set", "off"]
@@ -138,11 +138,11 @@ Item {
     var mid = root.parseTemp(midField)
     var max = root.parseTemp(maxField)
     if (!validCurve(low, mid, max)) {
-      message = "Min/Mid/Max: 30–90°C ve Min < Mid < Max olmalı (girilen: " + low + "/" + mid + "/" + max + ")"
+      message = "Min/Mid/Max: 30–90°C and Min < Mid < Max (entered: " + low + "/" + mid + "/" + max + ")"
       return
     }
     busy = true
-    message = "Yetkilendirme bekleniyor..."
+    message = "Waiting for authorization..."
     curveSetProc.command = ["pkexec", "/usr/local/bin/omarchy-fan-curve-set", String(low), String(mid), String(max)]
     curveSetProc.running = true
   }
@@ -188,7 +188,7 @@ Item {
       spacing: Style.space(8)
 
       Text {
-        text: "Fan kontrolü"
+        text: "Fan control"
         color: root.bar ? root.bar.foreground : Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.heading
@@ -196,7 +196,7 @@ Item {
       }
 
       Text {
-        text: "Fan modu"
+        text: "Fan mode"
         color: Qt.darker(root.bar ? root.bar.foreground : Color.foreground, 1.35)
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.caption
@@ -204,7 +204,7 @@ Item {
 
       Button {
         width: parent.width
-        text: root.maxActive ? "Max Fan (aktif)" : "Max Fan"
+        text: root.maxActive ? "Max Fan (active)" : "Max Fan"
         iconText: "󰈐"
         leftAlign: true
         selected: root.maxActive
@@ -219,7 +219,7 @@ Item {
         Text {
           anchors.left: parent.left
           anchors.verticalCenter: parent.verticalCenter
-          text: "Sabit fan hızı"
+          text: "Fixed fan speed"
           color: Qt.darker(root.bar ? root.bar.foreground : Color.foreground, 1.35)
           font.family: root.bar ? root.bar.fontFamily : Style.font.family
           font.pixelSize: Style.font.caption
@@ -257,7 +257,7 @@ Item {
 
       Button {
         width: parent.width
-        text: root.fixedActive ? "Sabit hızı uygula (" + root.fixedPercent + "%)" : "Sabit hızı uygula"
+        text: root.fixedActive ? "Apply fixed speed (" + root.fixedPercent + "%)" : "Apply fixed speed"
         iconText: "󰈐"
         leftAlign: true
         selected: root.fixedActive
@@ -267,7 +267,7 @@ Item {
 
       Button {
         width: parent.width
-        text: "Otomatik eğriye dön"
+        text: "Return to automatic curve"
         iconText: "󰒓"
         leftAlign: true
         enabled: !root.busy && (root.maxActive || root.fixedActive)
@@ -282,7 +282,7 @@ Item {
       }
 
       Text {
-        text: "Fan curve sıcaklıkları (°C)"
+        text: "Fan-curve temperatures (°C)"
         color: Qt.darker(root.bar ? root.bar.foreground : Color.foreground, 1.35)
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.caption
@@ -324,7 +324,7 @@ Item {
           anchors.left: parent.left
           anchors.verticalCenter: parent.verticalCenter
           width: Style.space(150)
-          text: "Mid / ramp başlangıcı"
+          text: "Mid / ramp start"
           color: root.bar ? root.bar.foreground : Color.foreground
           font.family: root.bar ? root.bar.fontFamily : Style.font.family
           font.pixelSize: Style.font.body
@@ -377,14 +377,14 @@ Item {
         spacing: Style.space(7)
 
         Button {
-          text: "Uygula"
+          text: "Apply"
           iconText: "󰄬"
           enabled: !root.busy
           onClicked: root.saveCurve()
         }
 
         Button {
-          text: "Yenile"
+          text: "Refresh"
           iconText: "󰑓"
           enabled: !root.busy
           onClicked: root.refresh()
@@ -395,7 +395,7 @@ Item {
         width: parent.width
         visible: root.message !== ""
         text: root.message
-        color: root.message.indexOf("uygulanamadı") !== -1 || root.message.indexOf("okunamadı") !== -1
+        color: root.message.indexOf("could not be applied") !== -1 || root.message.indexOf("could not be read") !== -1
           ? Color.urgent : Qt.darker(root.bar ? root.bar.foreground : Color.foreground, 1.35)
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.caption
@@ -444,7 +444,7 @@ Item {
     id: actionProc
     onExited: function(exitCode) {
       root.busy = false
-      root.message = exitCode === 0 ? "Fan modu güncellendi" : "Fan modu uygulanamadı"
+      root.message = exitCode === 0 ? "Fan mode updated" : "Fan mode could not be applied"
       root.refresh()
     }
   }
@@ -461,7 +461,7 @@ Item {
       }
       root.pendingMaxMode = ""
       root.busy = false
-      root.message = exitCode === 0 ? "Sabit fan hızı uygulandı" : "Sabit fan hızı uygulanamadı"
+      root.message = exitCode === 0 ? "Fixed fan speed applied" : "Fixed fan speed could not be applied"
       root.refresh()
     }
   }
@@ -470,7 +470,7 @@ Item {
     id: curveSetProc
     onExited: function(exitCode) {
       root.busy = false
-      root.message = exitCode === 0 ? "Fan curve kaydedildi" : "Fan curve uygulanamadı"
+      root.message = exitCode === 0 ? "Fan curve saved" : "Fan curve could not be applied"
       root.refresh()
     }
   }

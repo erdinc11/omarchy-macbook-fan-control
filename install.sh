@@ -15,4 +15,4 @@ sudo install -m 0755 "$repo_dir/bin/omarchy-fan-max-status" /usr/local/bin/omarc
 sudo install -m 0755 "$repo_dir/bin/omarchy-fan-curve-status" /usr/local/bin/omarchy-fan-curve-status
 sudo install -m 0755 "$repo_dir/bin/omarchy-fan-curve-set" /usr/local/bin/omarchy-fan-curve-set
 
-echo "Fan kontrolü kuruldu. shell.json kaydını kontrol edip 'omarchy restart shell' çalıştırın."
+echo "Fan control installed. Check the shell.json entry and run 'omarchy restart shell'."

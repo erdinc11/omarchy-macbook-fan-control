@@ -1,22 +1,22 @@
 # Omarchy MacBook Fan Control
 
-Omarchy üzerinde MacBook Air 11-inch (2013) için CPU sıcaklığını top bar'da gösteren ve fan kontrolü sağlayan özel Quickshell modülü.
+Custom Quickshell module for Omarchy on a 2013 MacBook Air 11-inch. It shows CPU temperature in the top bar and provides fan control.
 
-Özellikler:
+Features:
 
-- CPU sıcaklığını tek top-bar ikonunda gösterir.
-- Max Fan ile fanı maksimum hıza alır.
-- 20–100% arasında sabit fan hızı slider'ı sunar.
-- Min/Mid/Max fan curve sıcaklıklarını düzenler.
-- Otomatik eğriye tek butonla geri döner.
+- Shows CPU temperature in a single top-bar icon.
+- Sets the fan to maximum speed with Max Fan.
+- Provides a 20–100% fixed fan-speed slider.
+- Allows editing Min/Mid/Max fan-curve temperatures.
+- Returns to the automatic curve with one button.
 
-## Kurulum
+## Installation
 
 ```bash
 ./install.sh
 ```
 
-Kurulum root yardımcı komutlarını `/usr/local/bin` altına, Quickshell modülünü ise `~/.config/omarchy/bar/` altına kopyalar. `shell.json` içindeki sağ bar bölümünde şu kayıt bulunmalıdır:
+The installer copies privileged helper commands to `/usr/local/bin` and the Quickshell module to `~/.config/omarchy/bar/`. The right section of `shell.json` must contain:
 
 ```json
 {
@@ -25,10 +25,10 @@ Kurulum root yardımcı komutlarını `/usr/local/bin` altına, Quickshell modü
 }
 ```
 
-Kurulumdan sonra:
+After installation:
 
 ```bash
 omarchy restart shell
 ```
 
-Fan ayarlarının çalışması için `mbpfan` servisi ve Apple SMC fan sysfs arayüzü gerekir. Fan hızı işlemleri grafik polkit penceresi üzerinden yetkilendirilir.
+Fan control requires the `mbpfan` service and the Apple SMC fan sysfs interface. Fan-speed actions are authorized through the graphical polkit prompt.
