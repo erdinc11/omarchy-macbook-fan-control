@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -o pipefail
+
+temperature=$(
+  sensors 2>/dev/null | awk '
+    function emit(value) {
+      gsub(/[^0-9.]/, "", value)
+      if (value != "") {
+        printf "%.0f\n", value
+        exit
+      }
+    }
+    /^Package id 0:/ { emit($4) }
+    /^Tctl:/         { emit($2) }
+    /^CPU Temp:/     { emit($3) }
+    /^Core 0:/       { emit($3) }
+  '
+)
+
+if [ -n "$temperature" ]; then
+  printf '%s°C\n' "$temperature"
+else
+  printf '--°C\n'
+fi

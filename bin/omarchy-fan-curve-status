@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+read_setting() {
+  awk -F= -v key="$1" '$1 ~ "^[[:space:]]*" key "[[:space:]]*$" { gsub(/[[:space:]]/, "", $2); print $2; exit }' /etc/mbpfan.conf
+}
+
+low=$(read_setting low_temp)
+mid=$(read_setting high_temp)
+max=$(read_setting max_temp)
+printf '{"low":%s,"mid":%s,"max":%s}\n' "${low:-60}" "${mid:-73}" "${max:-90}"

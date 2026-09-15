@@ -1,0 +1,5 @@
+[general]
+low_temp = 60
+high_temp = 73
+max_temp = 90
+polling_interval = 2

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ -e /run/omarchy-fan-max ]]; then
+  printf '%s\n' '{"text":"󰈐","tooltip":"Fan MAX — kapatmak için tıkla","class":"active"}'
+else
+  printf '%s\n' '{"text":"󰈐","tooltip":"Fan otomatik eğri — MAX için tıkla","class":"inactive"}'
+fi

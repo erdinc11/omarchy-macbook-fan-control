@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+state=/run/omarchy-fan-max
+mode=${1:-toggle}
+[[ "$mode" == "on" || "$mode" == "off" || "$mode" == "toggle" ]] || exit 2
+
+if [[ "$mode" == "toggle" ]]; then
+  if [[ -e "$state" ]]; then mode=off; else mode=on; fi
+fi
+
+shopt -s nullglob
+manual_paths=(/sys/devices/platform/applesmc.*/fan*_manual)
+
+if [[ "$mode" == "off" ]]; then
+  for manual in "${manual_paths[@]}"; do
+    printf '0\n' > "$manual"
+  done
+  rm -f "$state"
+  systemctl start mbpfan.service
+  exit 0
+fi
+
+[[ -e "$state" ]] && exit 0
+systemctl stop mbpfan.service
+restore_on_error() {
+  systemctl start mbpfan.service >/dev/null 2>&1 || true
+  rm -f "$state"
+}
+trap restore_on_error ERR
+
+found=0
+for manual in "${manual_paths[@]}"; do
+  base=${manual%_manual}
+  output=${base}_output
+  max=${base}_max
+  [[ -e "$output" && -e "$max" ]] || continue
+  printf '1\n' > "$manual"
+  max_speed=$(<"$max")
+  printf '%s\n' "$max_speed" > "$output"
+  found=1
+done
+
+(( found > 0 ))
+: > "$state"
+trap - ERR

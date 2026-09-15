@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+state=/run/omarchy-fan-fixed
+if [[ -r "$state" ]] && percent=$(<"$state") && [[ "$percent" =~ ^[0-9]+$ ]]; then
+  printf '{"active":true,"percent":%s}\n' "$percent"
+else
+  printf '%s\n' '{"active":false,"percent":50}'
+fi

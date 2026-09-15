@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+state=/run/omarchy-fan-fixed
+percent=${1:-}
+
+shopt -s nullglob
+manual_paths=(/sys/devices/platform/applesmc.*/fan*_manual)
+
+if [[ "$percent" == "off" ]]; then
+  for manual in "${manual_paths[@]}"; do
+    printf '0\n' > "$manual"
+  done
+  rm -f "$state" /run/omarchy-fan-max
+  systemctl start mbpfan.service
+  exit 0
+fi
+
+[[ "$percent" =~ ^[0-9]+$ ]] || exit 2
+(( percent >= 20 && percent <= 100 )) || exit 2
+
+systemctl stop mbpfan.service
+restore_on_error() {
+  systemctl start mbpfan.service >/dev/null 2>&1 || true
+  rm -f "$state"
+}
+trap restore_on_error ERR
+
+found=0
+for manual in "${manual_paths[@]}"; do
+  base=${manual%_manual}
+  output=${base}_output
+  min=${base}_min
+  max=${base}_max
+  [[ -e "$output" && -e "$min" && -e "$max" ]] || continue
+
+  min_speed=$(<"$min")
+  max_speed=$(<"$max")
+  speed=$(( min_speed + (max_speed - min_speed) * percent / 100 ))
+  printf '1\n' > "$manual"
+  printf '%s\n' "$speed" > "$output"
+  found=1
+done
+
+(( found > 0 ))
+rm -f /run/omarchy-fan-max
+printf '%s\n' "$percent" > "$state"
+trap - ERR
