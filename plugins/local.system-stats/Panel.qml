@@ -71,8 +71,8 @@ Panel {
 
     return [
       { label: "CPU", value: percent(cpu.usage), progress: number(cpu.usage), detail: ghz(cpu.ghz) },
-      { label: "RAM", value: percent(ram.usage), progress: number(ram.usage), detail: pair(ram.used_gb, ram.total_gb) + " kullanılıyor" },
-      { label: "SSD", value: percent(ssd.usage), progress: number(ssd.usage), detail: pair(ssd.used_gb, ssd.total_gb) + " kullanılıyor" }
+      { label: "RAM", value: percent(ram.usage), progress: number(ram.usage), detail: pair(ram.used_gb, ram.total_gb) + " in use" },
+      { label: "SSD", value: percent(ssd.usage), progress: number(ssd.usage), detail: pair(ssd.used_gb, ssd.total_gb) + " in use" }
     ]
   }
 
@@ -134,8 +134,8 @@ Panel {
 
         PanelHero {
           width: parent.width
-          title: "Sistem kullanımı"
-          meta: root.loading ? "GÜNCELLENİYOR" : "CANLI · 2 SANİYEDE BİR"
+          title: "System usage"
+          meta: root.loading ? "UPDATING" : "LIVE · EVERY 2 SECONDS"
           foreground: root.contentForeground
           fontFamily: root.contentFontFamily
           iconComponent: Component {

@@ -62,7 +62,7 @@ BarWidget {
     bar: root.bar
     text: "󰍛"
     slotSize: Style.bar.statusSlot
-    tooltipText: "Sistem kullanımı"
+    tooltipText: "System usage"
 
     onPressed: function(buttonCode) {
       if (buttonCode === Qt.MiddleButton) root.refresh()
