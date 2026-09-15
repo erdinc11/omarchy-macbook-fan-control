@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "local.system-stats",
+  "name": "Sistem kullanımı",
+  "version": "1.0.0",
+  "author": "Local",
+  "description": "CPU, RAM ve SSD kullanımını gösterir",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Sistem kullanımı",
+    "description": "CPU, RAM ve SSD kullanımını gösterir",
+    "category": "System",
+    "defaultSection": "right",
+    "allowMultiple": false
+  }
+}
